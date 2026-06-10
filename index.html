@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NEXORA – Your 24x7 AI Workforce</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #07080f;
+    --bg2: #0d0f1e;
+    --bg3: #111326;
+    --gold: #f5c518;
+    --cyan: #00d4ff;
+    --purple: #7b2fff;
+    --green: #00e676;
+    --orange: #ff6d00;
+    --pink: #ff2d78;
+    --text: #e8eaf6;
+    --muted: #8892b0;
+    --card: #13162a;
+    --border: rgba(123,47,255,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Space Grotesk', sans-serif; overflow-x:hidden; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg2); }
+  ::-webkit-scrollbar-thumb { background:var(--purple); border-radius:3px; }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:rgba(7,8,15,0.92); backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 6%; height:64px;
+  }
+  .logo { font-family:'Orbitron',monospace; font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:3px; }
+  .logo span { color:var(--cyan); }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:.85rem; font-weight:500; transition:.2s; letter-spacing:.5px; }
+  .nav-links a:hover { color:var(--cyan); }
+  .nav-cta { background:linear-gradient(135deg,var(--purple),var(--cyan)); border:none; color:#fff; padding:.5rem 1.4rem; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:.85rem; letter-spacing:.5px; }
+
+  /* HERO */
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:100px 6% 60px;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(123,47,255,.18) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,212,255,.1) 0%, transparent 60%),
+                var(--bg);
+    position:relative; overflow:hidden;
+  }
+  .hero-eyebrow { font-size:.75rem; letter-spacing:4px; color:var(--cyan); font-weight:600; margin-bottom:1.2rem; text-transform:uppercase; }
+  .hero h1 { font-family:'Orbitron',monospace; font-size:clamp(2.2rem,5.5vw,5rem); font-weight:900; line-height:1.05; margin-bottom:1.5rem; }
+  .hero h1 .accent-gold { color:var(--gold); }
+  .hero h1 .accent-cyan { color:var(--cyan); }
+  .hero-sub { font-size:1.1rem; color:var(--muted); max-width:560px; line-height:1.7; margin-bottom:2.5rem; }
+  .hero-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+  .btn-primary { background:linear-gradient(135deg,var(--purple),var(--cyan)); border:none; color:#fff; padding:.85rem 2rem; border-radius:8px; font-weight:700; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:1rem; transition:.2s; }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(123,47,255,.4); }
+  .btn-outline { background:transparent; border:1.5px solid var(--border); color:var(--text); padding:.85rem 2rem; border-radius:8px; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:1rem; transition:.2s; }
+  .btn-outline:hover { border-color:var(--cyan); color:var(--cyan); }
+
+  .hero-badges { display:flex; gap:2rem; margin-top:3.5rem; flex-wrap:wrap; justify-content:center; }
+  .badge { font-size:.75rem; color:var(--muted); display:flex; align-items:center; gap:.4rem; }
+  .badge-dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* AGENTS GRID */
+  .agents-section { padding:100px 6%; }
+  .section-label { text-align:center; font-size:.75rem; letter-spacing:4px; color:var(--purple); font-weight:600; text-transform:uppercase; margin-bottom:.8rem; }
+  .section-title { text-align:center; font-family:'Orbitron',monospace; font-size:clamp(1.6rem,3.5vw,2.8rem); font-weight:900; margin-bottom:.6rem; }
+  .section-sub { text-align:center; color:var(--muted); font-size:.95rem; margin-bottom:3.5rem; }
+
+  .agents-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:1.5rem; max-width:1200px; margin:0 auto; }
+
+  .agent-card {
+    background:var(--card); border-radius:16px; padding:1.8rem;
+    border:1.5px solid transparent;
+    position:relative; cursor:pointer; overflow:hidden;
+    transition:transform .25s, box-shadow .25s;
+  }
+  .agent-card::before {
+    content:''; position:absolute; inset:0; border-radius:16px;
+    padding:1.5px;
+    background:linear-gradient(135deg, var(--agent-color, #7b2fff), transparent 60%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+  .agent-card:hover { transform:translateY(-6px); box-shadow:0 16px 48px rgba(0,0,0,.4); }
+
+  .agent-header { display:flex; align-items:center; gap:1rem; margin-bottom:1.2rem; }
+  .agent-icon { width:50px; height:50px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+  .agent-meta h3 { font-family:'Orbitron',monospace; font-size:1.05rem; font-weight:900; }
+  .agent-meta p { font-size:.72rem; color:var(--muted); letter-spacing:.5px; text-transform:uppercase; margin-top:.15rem; }
+
+  .agent-tags { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1.4rem; }
+  .tag { background:rgba(255,255,255,.06); border-radius:4px; padding:.25rem .55rem; font-size:.7rem; color:var(--muted); }
+
+  .agent-price { font-size:.8rem; color:var(--muted); margin-bottom:1rem; }
+  .agent-price strong { font-size:1.2rem; color:var(--text); font-family:'Orbitron',monospace; }
+
+  .agent-btn { width:100%; padding:.7rem; border-radius:8px; border:none; font-weight:700; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:.9rem; transition:.2s; }
+  .agent-btn:hover { opacity:.85; transform:translateY(-1px); }
+
+  /* PRICING */
+  .pricing-section { padding:100px 6%; background:var(--bg2); }
+  .pricing-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; max-width:1100px; margin:0 auto; }
+  .price-card { background:var(--card); border-radius:16px; padding:2rem; border:1.5px solid var(--border); position:relative; transition:.25s; }
+  .price-card.featured { border-color:var(--cyan); box-shadow:0 0 40px rgba(0,212,255,.12); }
+  .price-card.featured::after { content:'BEST VALUE'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--purple),var(--cyan)); color:#fff; font-size:.65rem; font-weight:800; padding:.3rem .8rem; border-radius:20px; letter-spacing:1.5px; white-space:nowrap; }
+  .price-name { font-family:'Orbitron',monospace; font-size:.85rem; font-weight:700; color:var(--cyan); margin-bottom:.5rem; letter-spacing:1px; }
+  .price-amount { font-family:'Orbitron',monospace; font-size:2.2rem; font-weight:900; margin-bottom:.25rem; }
+  .price-period { font-size:.75rem; color:var(--muted); margin-bottom:1.2rem; }
+  .price-includes { list-style:none; margin-bottom:1.5rem; }
+  .price-includes li { font-size:.82rem; color:var(--muted); padding:.3rem 0; display:flex; align-items:center; gap:.5rem; border-bottom:1px solid rgba(255,255,255,.04); }
+  .price-includes li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
+  .price-btn { width:100%; padding:.75rem; border-radius:8px; border:1.5px solid var(--border); background:transparent; color:var(--text); font-weight:700; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:.9rem; transition:.2s; }
+  .price-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+  .price-card.featured .price-btn { background:linear-gradient(135deg,var(--purple),var(--cyan)); border:none; color:#fff; }
+
+  /* FOOTER */
+  footer { background:var(--bg); border-top:1px solid var(--border); padding:3rem 6%; text-align:center; }
+  footer .foot-logo { font-family:'Orbitron',monospace; font-size:1.3rem; font-weight:900; margin-bottom:.6rem; }
+  footer .foot-logo span { color:var(--cyan); }
+  footer p { color:var(--muted); font-size:.8rem; }
+
+  /* ========== CHAT MODAL ========== */
+  .chat-overlay {
+    display:none; position:fixed; inset:0; z-index:2000;
+    background:rgba(0,0,0,.75); backdrop-filter:blur(6px);
+    align-items:center; justify-content:center; padding:1rem;
+  }
+  .chat-overlay.open { display:flex; }
+
+  .chat-modal {
+    background:var(--bg2); border-radius:20px; width:100%; max-width:520px;
+    max-height:90vh; display:flex; flex-direction:column;
+    border:1.5px solid var(--border);
+    box-shadow:0 24px 80px rgba(0,0,0,.6);
+    overflow:hidden; animation:slideUp .25s ease;
+  }
+  @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+  .chat-header {
+    display:flex; align-items:center; gap:.9rem;
+    padding:1.2rem 1.4rem;
+    border-bottom:1px solid var(--border);
+    background:var(--bg3);
+    position:relative;
+  }
+  .chat-agent-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+  .chat-agent-info h4 { font-family:'Orbitron',monospace; font-size:.95rem; font-weight:900; }
+  .chat-agent-info p { font-size:.7rem; color:var(--muted); margin-top:.1rem; }
+  .chat-status { display:flex; align-items:center; gap:.35rem; font-size:.7rem; color:var(--green); margin-top:.2rem; }
+  .chat-status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+  .chat-close { position:absolute; right:1.2rem; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.06); border:none; color:var(--text); width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:.2s; }
+  .chat-close:hover { background:rgba(255,255,255,.12); }
+
+  .chat-messages {
+    flex:1; overflow-y:auto; padding:1.2rem;
+    display:flex; flex-direction:column; gap:.8rem;
+    min-height:320px; max-height:55vh;
+  }
+  .chat-messages::-webkit-scrollbar { width:4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background:var(--border); }
+
+  .msg { display:flex; gap:.6rem; max-width:88%; }
+  .msg.user { align-self:flex-end; flex-direction:row-reverse; }
+  .msg-bubble {
+    padding:.75rem 1rem; border-radius:14px;
+    font-size:.88rem; line-height:1.55;
+  }
+  .msg.ai .msg-bubble { background:var(--bg3); border-bottom-left-radius:4px; color:var(--text); }
+  .msg.user .msg-bubble { background:linear-gradient(135deg,var(--purple),#5b21b6); color:#fff; border-bottom-right-radius:4px; }
+  .msg-avatar { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.9rem; flex-shrink:0; margin-top:2px; }
+
+  .typing-indicator { display:flex; gap:.25rem; align-items:center; padding:.6rem .8rem; }
+  .typing-indicator span { width:7px; height:7px; background:var(--muted); border-radius:50%; animation:typing .9s infinite; }
+  .typing-indicator span:nth-child(2){animation-delay:.15s}
+  .typing-indicator span:nth-child(3){animation-delay:.3s}
+  @keyframes typing { 0%,80%,100%{transform:scale(.7);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+  .chat-quick-btns { padding:.6rem 1.2rem; display:flex; gap:.5rem; flex-wrap:wrap; border-top:1px solid var(--border); }
+  .quick-btn { background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--muted); padding:.35rem .7rem; border-radius:20px; font-size:.72rem; cursor:pointer; transition:.2s; font-family:'Space Grotesk',sans-serif; }
+  .quick-btn:hover { background:rgba(255,255,255,.1); color:var(--text); }
+
+  .chat-input-row { display:flex; gap:.6rem; padding:1rem 1.2rem; border-top:1px solid var(--border); background:var(--bg3); }
+  .chat-input {
+    flex:1; background:rgba(255,255,255,.05); border:1px solid var(--border);
+    border-radius:10px; color:var(--text); padding:.7rem 1rem; font-family:'Space Grotesk',sans-serif;
+    font-size:.88rem; outline:none; transition:.2s; resize:none;
+  }
+  .chat-input:focus { border-color:var(--cyan); background:rgba(255,255,255,.08); }
+  .chat-send {
+    background:linear-gradient(135deg,var(--purple),var(--cyan)); border:none; color:#fff;
+    width:42px; height:42px; border-radius:10px; cursor:pointer; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.2s;
+  }
+  .chat-send:hover { transform:scale(1.06); }
+  .chat-send:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+  /* POPUP */
+  .welcome-popup { display:none; position:fixed; inset:0; z-index:1500; background:rgba(0,0,0,.8); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1rem; }
+  .welcome-popup.open { display:flex; }
+  .popup-box { background:var(--bg2); border-radius:20px; padding:2.5rem; max-width:440px; width:100%; border:1.5px solid var(--border); text-align:center; animation:slideUp .3s ease; }
+  .popup-box h2 { font-family:'Orbitron',monospace; font-size:1.3rem; margin-bottom:.5rem; }
+  .popup-box p { color:var(--muted); font-size:.85rem; margin-bottom:1.8rem; }
+  .popup-agents { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-bottom:1.2rem; }
+  .popup-agent { background:var(--bg3); border-radius:10px; padding:.8rem; cursor:pointer; border:1.5px solid transparent; transition:.2s; display:flex; align-items:center; gap:.6rem; }
+  .popup-agent:hover { border-color:var(--cyan); }
+  .popup-agent span:first-child { font-size:1.3rem; }
+  .popup-agent-name { font-size:.8rem; font-weight:700; }
+  .popup-agent-role { font-size:.65rem; color:var(--muted); }
+  .popup-close { background:transparent; border:1.5px solid var(--border); color:var(--muted); padding:.5rem 1.2rem; border-radius:8px; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:.82rem; margin-top:.5rem; }
+
+  @media(max-width:600px){
+    .nav-links{display:none}
+    .agents-grid{grid-template-columns:1fr}
+    .pricing-grid{grid-template-columns:1fr}
+    .popup-agents{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">NEX<span>ORA</span></div>
+  <ul class="nav-links">
+    <li><a href="#agents">AI Employees</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#industries">Industries</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openPopup()">Hire AI Employee</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">India's First AI Employee Marketplace</p>
+  <h1>ONE PLATFORM.<br><span class="accent-gold">9 AI EMPLOYEES.</span><br><span class="accent-cyan">INFINITE GROWTH.</span></h1>
+  <p class="hero-sub">Stop paying ₹50,000+ salaries for every department. Hire intelligent AI employees that work 24×7 across Finance, Legal, GST, Sales, Branding & more.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="openPopup()">Meet Your AI Team →</button>
+    <button class="btn-outline" onclick="document.getElementById('agents').scrollIntoView()">See All Agents</button>
+  </div>
+  <div class="hero-badges">
+    <div class="badge"><div class="badge-dot"></div> 24×7 Active</div>
+    <div class="badge">🇮🇳 Built for India</div>
+    <div class="badge">🔒 100% Secure</div>
+    <div class="badge">⚡ WhatsApp Ready</div>
+  </div>
+</section>
+
+<!-- AGENTS GRID -->
+<section class="agents-section" id="agents">
+  <p class="section-label">Your AI Workforce</p>
+  <h2 class="section-title">Meet Your <span style="color:var(--cyan)">AI Employees</span></h2>
+  <p class="section-sub">Each agent is trained for their role. Click any card to start working with them now.</p>
+  <div class="agents-grid" id="agentsGrid"></div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <p class="section-label">Transparent Pricing</p>
+  <h2 class="section-title">Choose Your <span style="color:var(--gold)">Workforce</span></h2>
+  <p class="section-sub">Pay only for what you need. Upgrade anytime.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">EXPERT AGENT</div>
+      <div class="price-amount" style="color:var(--gold)">₹3,399</div>
+      <div class="price-period">/month per agent</div>
+      <ul class="price-includes">
+        <li>NIDHI – Finance & Funding</li>
+        <li>NYAYA – Legal Intelligence</li>
+        <li>UDYAM – Business Intelligence</li>
+        <li>LEKHA – Accounting & GST</li>
+        <li>Unlimited chat queries</li>
+        <li>WhatsApp access</li>
+      </ul>
+      <button class="price-btn" onclick="openPopup()">Get Started</button>
+    </div>
+    <div class="price-card">
+      <div class="price-name">AUTOMATION AGENT</div>
+      <div class="price-amount" style="color:var(--cyan)">₹2,396</div>
+      <div class="price-period">/month per agent</div>
+      <ul class="price-includes">
+        <li>ZYRON – Customer Conversations</li>
+        <li>RAVEX – Follow-up & Recovery</li>
+        <li>QUANTIX – Documentation</li>
+        <li>VEXORA – Creative & Branding</li>
+        <li>Automation workflows</li>
+        <li>WhatsApp access</li>
+      </ul>
+      <button class="price-btn" onclick="openPopup()">Get Started</button>
+    </div>
+    <div class="price-card">
+      <div class="price-name">STARTUP BUNDLE</div>
+      <div class="price-amount" style="color:var(--purple)">₹7,999</div>
+      <div class="price-period">/month · 3 agents</div>
+      <ul class="price-includes">
+        <li>UDYAM – Business Planning</li>
+        <li>NIDHI – Finance & Funding</li>
+        <li>LEKHA – Accounting & GST</li>
+        <li>Save ₹2,198/month</li>
+        <li>Priority support</li>
+        <li>WhatsApp access</li>
+      </ul>
+      <button class="price-btn" onclick="openPopup()">Get Bundle</button>
+    </div>
+    <div class="price-card featured">
+      <div class="price-name">GROWTH BUNDLE</div>
+      <div class="price-amount" style="color:var(--green)">₹8,999</div>
+      <div class="price-period">/month · 4 agents</div>
+      <ul class="price-includes">
+        <li>UDYAM – Business Intelligence</li>
+        <li>ZYRON – Customer Support</li>
+        <li>RAVEX – Lead Follow-up</li>
+        <li>VEXORA – Creative Content</li>
+        <li>Save ₹584/month</li>
+        <li>Dashboard + analytics</li>
+      </ul>
+      <button class="price-btn" onclick="openPopup()">Get Bundle</button>
+    </div>
+    <div class="price-card">
+      <div class="price-name">FULL WORKFORCE</div>
+      <div class="price-amount" style="color:var(--orange)">₹19,999</div>
+      <div class="price-period">/month · All 8 agents</div>
+      <ul class="price-includes">
+        <li>All 8 AI Employees</li>
+        <li>COMMANDER AI routing</li>
+        <li>Dedicated dashboard</li>
+        <li>Save ₹5,573/month</li>
+        <li>Onboarding support</li>
+        <li>WhatsApp + Web access</li>
+      </ul>
+      <button class="price-btn" onclick="openPopup()">Get All Agents</button>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section style="padding:100px 6%;" id="industries">
+  <p class="section-label">Industries We Serve</p>
+  <h2 class="section-title">Built for <span style="color:var(--cyan)">Every Business</span></h2>
+  <div style="display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin-top:2.5rem;max-width:800px;margin-left:auto;margin-right:auto;">
+    <script>
+    const industries = ['🍽️ Restaurants','🛒 Retail Shops','🏭 Manufacturers','🏥 Hospitals','✈️ Travel Agencies','🎓 Education','🏠 Real Estate','📦 Exporters','💼 Consultants','🧑‍💻 Freelancers','🚀 Startups'];
+    document.write(industries.map(i=>`<span style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.55rem 1.1rem;font-size:.82rem;color:var(--text)">${i}</span>`).join(''));
+    </script>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">NEX<span>ORA</span></div>
+  <p style="margin-bottom:.4rem;margin-top:.3rem">One Platform. 8 AI Employees. Endless Possibilities.</p>
+  <p>© 2026 Nexora AI · India's First AI Employee Marketplace · Built for Bharat 🇮🇳</p>
+</footer>
+
+<!-- WELCOME POPUP -->
+<div class="welcome-popup" id="welcomePopup">
+  <div class="popup-box">
+    <h2>Meet Your AI Workforce</h2>
+    <p>Which AI employee would you like to talk to?</p>
+    <div class="popup-agents" id="popupAgents"></div>
+    <button class="popup-close" onclick="closePopup()">Maybe later</button>
+  </div>
+</div>
+
+<!-- CHAT MODAL -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-modal">
+    <div class="chat-header">
+      <div class="chat-agent-icon" id="chatIcon"></div>
+      <div class="chat-agent-info">
+        <h4 id="chatName"></h4>
+        <p id="chatRole"></p>
+        <div class="chat-status"><div class="chat-status-dot"></div> Online · Powered by Junoon</div>
+      </div>
+      <button class="chat-close" onclick="closeChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-quick-btns" id="quickBtns"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" rows="1" placeholder="Type your message..." onkeydown="handleKey(event)"></textarea>
+      <button class="chat-send" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const AGENTS = [
+  {
+    id:'nidhi', name:'NIDHI', role:'Finance & Funding Intelligence Agent', icon:'💰',
+    color:'#f5c518', price:'₹3,399/month',
+    tags:['Business Loans','MSME Schemes','CIBIL Guidance','Working Capital','Startup Funding'],
+    quickPrompts:['How do I get a business loan?','What is CIBIL score?','MSME funding schemes','Working capital planning'],
+    systemPrompt:`You are NIDHI, an expert AI Finance & Funding Intelligence Agent working for NEXORA – India's First AI Employee Marketplace. Your specialties are:
+- Business and personal loan guidance
+- MSME government schemes (Mudra, CGTMSE, Startup India, etc.)
+- CIBIL score improvement
+- Working capital planning
+- Startup funding pathways (angel, VC, grants)
+- Financial planning for Indian small businesses
+
+Rules:
+- Be warm, professional, and speak in simple English (mix Hindi phrases naturally where appropriate like "bilkul", "haan ji")
+- Always provide actionable, India-specific advice
+- Mention relevant government schemes when applicable
+- If asked about something outside finance/funding, politely redirect: "That's a great question! Let me connect you to the right AI colleague for that."
+- Keep responses concise but helpful (3-5 sentences per response max unless a detailed list is needed)
+- End each response with a follow-up question to understand the user better
+- Never give a guarantee on loan approval; always advise consulting a financial advisor for final decisions`
+  },
+  {
+    id:'udyam', name:'UDYAM', role:'Startup & Business Intelligence Agent', icon:'🚀',
+    color:'#ff6d00', price:'₹3,399/month',
+    tags:['Business Planning','Startup Setup','Growth Strategy','Market Entry','Franchise'],
+    quickPrompts:['How do I start a business in India?','Business plan for my startup','Market entry strategy','Company registration process'],
+    systemPrompt:`You are UDYAM, an expert AI Business Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- Business planning and roadmaps
+- Company registration (Private Ltd, LLP, OPC, Proprietorship)
+- Startup India, DPIIT recognition
+- Growth strategy and scaling
+- Franchise planning
+- Market entry strategy for Indian markets
+- MSME registration and benefits
+
+Rules:
+- Be energetic, motivating, and entrepreneurial in tone
+- Use India-specific examples (mention Tier 2/3 cities, Indian market nuances)
+- Provide step-by-step guidance when asked about processes
+- Reference government portals (MCA, Startup India portal) when relevant
+- Mix in occasional Hindi phrases naturally
+- Keep responses focused and actionable
+- End with an engaging follow-up question
+- If asked about something outside business strategy/setup, redirect to the appropriate NEXORA agent`
+  },
+  {
+    id:'nyaya', name:'NYAYA', role:'Legal Guidance Intelligence Agent', icon:'⚖️',
+    color:'#00e676', price:'₹3,399/month',
+    tags:['Consumer Rights','Cyber Complaints','Contract Guidance','FIR Drafting','Legal Awareness'],
+    quickPrompts:['How to file a consumer complaint?','Cyber fraud complaint process','Contract review basics','My legal rights as a tenant'],
+    systemPrompt:`You are NYAYA, an expert AI Legal Guidance Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- Consumer complaint guidance (Consumer Protection Act 2019)
+- Cyber crime complaints (cybercrime.gov.in process)
+- FIR drafting guidance
+- BNS (Bharatiya Nyaya Sanhita) references
+- Basic contract and agreement guidance
+- Tenant and landlord rights
+- Workplace rights awareness
+- Legal compliance for small businesses
+
+Important disclaimer rules:
+- Always add: "This is general legal awareness, not legal advice. Please consult a qualified advocate for your specific case."
+- Be clear, empathetic, and non-judgmental
+- Reference specific Indian laws and sections when relevant
+- Guide users to the right authorities (Consumer Forum, Cyber Cell, NCDRC, etc.)
+- Keep legal jargon minimal; explain in plain language
+- Never encourage illegal activity
+- End responses with a follow-up question`
+  },
+  {
+    id:'lekha', name:'LEKHA', role:'Accounting & GST Intelligence Agent', icon:'📊',
+    color:'#7b2fff', price:'₹3,399/month',
+    tags:['GST Filing','Tax Reminders','Invoice Management','Bookkeeping','TDS'],
+    quickPrompts:['GST registration process','How to file GSTR-1?','TDS basics for small business','Invoice format requirements'],
+    systemPrompt:`You are LEKHA, an expert AI Accounting & GST Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- GST registration, filing (GSTR-1, GSTR-3B, GSTR-9)
+- TDS/TCS compliance
+- Invoice creation and GST-compliant invoicing
+- Bookkeeping guidance for small businesses
+- Income tax basics for proprietors and companies
+- Tax saving strategies for SMEs
+- Accounting software guidance (Tally, Zoho Books, etc.)
+- ITR filing guidance
+
+Rules:
+- Be precise and accurate with GST/tax information
+- Always mention: "Please verify with a CA/tax professional for your specific situation."
+- Use clear examples with numbers when explaining concepts
+- Reference GST portal (gstin.gov.in) and Income Tax portal when relevant
+- Mention deadlines for filings proactively
+- Keep financial jargon explained in simple terms
+- End with a relevant follow-up question`
+  },
+  {
+    id:'zyron', name:'ZYRON', role:'Customer Conversation Intelligence Agent', icon:'💬',
+    color:'#00d4ff', price:'₹2,396/month',
+    tags:['WhatsApp Support','Lead Qualification','FAQ Handling','Customer Replies','Inquiry'],
+    quickPrompts:['Set up customer support','Lead qualification questions','Handle angry customers','WhatsApp auto-reply setup'],
+    systemPrompt:`You are ZYRON, an expert AI Customer Conversation Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- Customer support conversation design
+- Lead qualification frameworks
+- FAQ creation and management
+- WhatsApp Business setup and automation
+- Customer inquiry handling scripts
+- Response templates for common scenarios
+- Escalation protocols
+- Customer satisfaction improvement
+
+Rules:
+- Be friendly, solution-oriented, and empathetic
+- Provide ready-to-use conversation templates and scripts
+- Give practical WhatsApp Business tips
+- Use examples relevant to Indian businesses (restaurants, retail, services)
+- Help businesses create their own customer support SOPs
+- End with an actionable follow-up question
+- Keep advice practical and immediately implementable`
+  },
+  {
+    id:'ravex', name:'RAVEX', role:'Follow-up & Recovery Intelligence Agent', icon:'🔄',
+    color:'#ff2d78', price:'₹2,396/month',
+    tags:['Lead Follow-up','Payment Recovery','Customer Reactivation','Retention','Reminders'],
+    quickPrompts:['Follow-up sequence for leads','Payment reminder messages','Reactivate old customers','Retention campaign ideas'],
+    systemPrompt:`You are RAVEX, an expert AI Follow-up & Recovery Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- Lead follow-up sequences (email, WhatsApp, SMS)
+- Payment reminder campaigns (polite to firm escalation)
+- Customer reactivation strategies for dormant clients
+- Retention campaign design
+- CRM follow-up workflows
+- Win-back campaign messaging
+- Dunning management for overdue invoices
+
+Rules:
+- Be persuasive but professional in all templates
+- Provide ready-to-use message templates in English and Hinglish
+- Give follow-up timing strategies (Day 1, Day 3, Day 7, etc.)
+- Always keep the tone non-aggressive for payment reminders (especially early-stage)
+- Provide A/B testing ideas for message effectiveness
+- Reference WhatsApp Business API capabilities
+- End with a specific follow-up question about their business need`
+  },
+  {
+    id:'quantix', name:'QUANTIX', role:'Quotation & Documentation Intelligence Agent', icon:'📄',
+    color:'#ffd600', price:'₹2,396/month',
+    tags:['Quotations','Proposals','Agreements','Invoices','SOP Creation'],
+    quickPrompts:['Create a business proposal','Professional invoice format','Service agreement template','SOP for my team'],
+    systemPrompt:`You are QUANTIX, an expert AI Documentation Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- Professional quotation and proposal drafting
+- Invoice creation (GST-compliant)
+- Service and business agreements
+- SOP (Standard Operating Procedures) creation
+- Business letters and correspondence
+- NDA (Non-Disclosure Agreement) templates
+- MOU (Memorandum of Understanding) drafting
+- Company policy documents
+
+Rules:
+- Provide complete, ready-to-use document templates
+- Always include relevant legal clauses and professional formatting notes
+- For agreements/contracts, always add: "Have this reviewed by a legal professional before signing."
+- Use clean, professional formatting in your document outputs
+- Customize templates based on the user's industry
+- Provide guidance on when to use each document type
+- End with a follow-up question to refine the document further`
+  },
+  {
+    id:'vexora', name:'VEXORA', role:'Creative & Branding Intelligence Agent', icon:'🎨',
+    color:'#e040fb', price:'₹2,396/month',
+    tags:['Social Media Content','Ad Copy','Branding','Marketing Campaigns','Posters'],
+    quickPrompts:['Write Instagram captions','Brand identity ideas','Google Ads copy','Content calendar for my business'],
+    systemPrompt:`You are VEXORA, an expert AI Creative & Branding Intelligence Agent for NEXORA – India's First AI Employee Marketplace. Your specialties:
+- Social media content creation (Instagram, Facebook, LinkedIn, YouTube)
+- Ad copywriting (Google Ads, Meta Ads, WhatsApp Ads)
+- Brand identity development (taglines, brand voice, positioning)
+- Marketing campaign concepts
+- Content calendars and posting strategies
+- Poster and creative brief writing
+- Email marketing campaigns
+- Festival and seasonal marketing (Indian festivals: Diwali, Holi, etc.)
+
+Rules:
+- Be creative, energetic, and trend-aware
+- Always align content with the client's brand voice
+- Provide multiple creative options when generating copy (give 2-3 variations)
+- Reference Indian cultural nuances (festivals, regional preferences)
+- For social media, always include: caption, hashtags, and posting tip
+- For ads, include headline, description, and CTA
+- Keep the Indian SME audience in mind (relatable, aspirational tone)
+- End with a creative follow-up question`
+  }
+];
+
+// Render agent cards
+const grid = document.getElementById('agentsGrid');
+AGENTS.forEach(agent => {
+  const card = document.createElement('div');
+  card.className = 'agent-card';
+  card.style.setProperty('--agent-color', agent.color);
+  card.innerHTML = `
+    <div class="agent-header">
+      <div class="agent-icon" style="background:${agent.color}20">${agent.icon}</div>
+      <div class="agent-meta">
+        <h3 style="color:${agent.color}">${agent.name}</h3>
+        <p>${agent.role.split(' ').slice(0,3).join(' ')}</p>
+      </div>
+    </div>
+    <div class="agent-tags">${agent.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <div class="agent-price"><strong>${agent.price}</strong> per agent</div>
+    <button class="agent-btn" style="background:${agent.color}20;color:${agent.color};border:1.5px solid ${agent.color}40" onclick="openChat('${agent.id}')">Chat with ${agent.name} →</button>
+  `;
+  grid.appendChild(card);
+});
+
+// Render popup agents
+const popupAgents = document.getElementById('popupAgents');
+AGENTS.forEach(agent => {
+  const btn = document.createElement('div');
+  btn.className = 'popup-agent';
+  btn.innerHTML = `<span>${agent.icon}</span><div><div class="popup-agent-name" style="color:${agent.color}">${agent.name}</div><div class="popup-agent-role">${agent.role.split(' ').slice(0,2).join(' ')}</div></div>`;
+  btn.onclick = () => { closePopup(); openChat(agent.id); };
+  popupAgents.appendChild(btn);
+});
+
+// Popup logic
+function openPopup() { document.getElementById('welcomePopup').classList.add('open'); }
+function closePopup() { document.getElementById('welcomePopup').classList.remove('open'); }
+
+// Chat state
+let currentAgent = null;
+let chatHistory = [];
+let isTyping = false;
+
+function openChat(agentId) {
+  const agent = AGENTS.find(a => a.id === agentId);
+  if(!agent) return;
+  currentAgent = agent;
+  chatHistory = [];
+
+  document.getElementById('chatIcon').innerHTML = agent.icon;
+  document.getElementById('chatIcon').style.background = agent.color + '25';
+  document.getElementById('chatName').textContent = agent.name;
+  document.getElementById('chatName').style.color = agent.color;
+  document.getElementById('chatRole').textContent = agent.role;
+
+  const qb = document.getElementById('quickBtns');
+  qb.innerHTML = '';
+  agent.quickPrompts.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-btn';
+    btn.textContent = q;
+    btn.onclick = () => { document.getElementById('chatInput').value = q; sendMessage(); };
+    qb.appendChild(btn);
+  });
+
+  const msgs = document.getElementById('chatMessages');
+  msgs.innerHTML = '';
+
+  document.getElementById('chatOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Greeting
+  addAIMessage(`Namaste! 👋 I'm **${agent.name}**, your dedicated ${agent.role}.\n\nI'm here to help you with ${agent.tags.slice(0,3).join(', ')}, and much more — available 24×7!\n\nHow can I assist you today?`);
+}
+
+function closeChat() {
+  document.getElementById('chatOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentAgent = null;
+  chatHistory = [];
+}
+
+function addAIMessage(text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.innerHTML = `
+    <div class="msg-avatar" style="background:${currentAgent.color}20">${currentAgent.icon}</div>
+    <div class="msg-bubble">${formatMsg(text)}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMessage(text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="msg-bubble">${escapeHtml(text)}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="msg-avatar" style="background:${currentAgent.color}20">${currentAgent.icon}</div>
+    <div class="msg-bubble" style="padding:.4rem .6rem">
+      <div class="typing-indicator"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+function formatMsg(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function handleKey(e) {
+  if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text || isTyping || !currentAgent) return;
+
+  input.value = '';
+  addUserMessage(text);
+  chatHistory.push({ role:'user', content: text });
+
+  isTyping = true;
+  document.getElementById('sendBtn').disabled = true;
+  showTyping();
+
+  try {
+    const messages = chatHistory.slice(-12);
+    const response = await fetch('/api/chat', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: currentAgent.systemPrompt,
+        messages: messages
+      })
+    });
+
+    const data = await response.json();
+    removeTyping();
+
+    const reply = data.content?.map(c => c.text || '').join('') || 'Sorry, I encountered an issue. Please try again.';
+    chatHistory.push({ role:'assistant', content: reply });
+    addAIMessage(reply);
+  } catch(err) {
+    removeTyping();
+    addAIMessage('I apologize, I\'m having trouble connecting right now. Please try again in a moment.');
+  }
+
+  isTyping = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('chatInput').focus();
+}
+
+// Show popup after 2s
+setTimeout(() => openPopup(), 2000);
+
+// Close overlay on outside click
+document.getElementById('chatOverlay').addEventListener('click', function(e) {
+  if(e.target === this) closeChat();
+});
+document.getElementById('welcomePopup').addEventListener('click', function(e) {
+  if(e.target === this) closePopup();
+});
+</script>
+</body>
+</html>
