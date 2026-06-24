@@ -3011,7 +3011,7 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT
+    JAVASCRIPT — UPDATED WITH AGENT BIBLES & CONVERSATION HISTORY
     ============================================================ -->
     <script>
         // ============================================================
@@ -3354,6 +3354,9 @@
         //  GLOBAL STATE
         // ============================================================
         let isTrialActive = false;
+        let chatOpen = false;
+        let currentAgentId = 'monica';
+        let conversationHistory = []; // Stores {role: 'user'|'assistant', content: string}
 
         // ============================================================
         //  RENDER LANDING PREVIEW
@@ -3622,11 +3625,8 @@
         }
 
         // ============================================================
-        //  CHAT
+        //  CHAT — UPDATED WITH API INTEGRATION & AGENT ID
         // ============================================================
-        let chatOpen = false;
-        let currentAgentId = 'monica';
-
         function toggleChat() {
             chatOpen = !chatOpen;
             const panel = document.getElementById('chatPanel');
@@ -3665,11 +3665,11 @@
                 opt.className = 'agent-opt' + (agent.id === currentAgentId ? ' active' : '');
                 opt.dataset.id = agent.id;
                 opt.innerHTML = `
-              <span class="icon-wrap" style="background:${agent.id === currentAgentId ? agent.color : 'rgba(255,255,255,0.02)'}; color:${agent.id === currentAgentId ? '#fff' : agent.color}; border-color:${agent.id === currentAgentId ? agent.color : 'transparent'};">
-                <i class="fas ${agent.icon}"></i>
-              </span>
-              <span class="label">${agent.name}</span>
-            `;
+                    <span class="icon-wrap" style="background:${agent.id === currentAgentId ? agent.color : 'rgba(255,255,255,0.02)'}; color:${agent.id === currentAgentId ? '#fff' : agent.color}; border-color:${agent.id === currentAgentId ? agent.color : 'transparent'};">
+                        <i class="fas ${agent.icon}"></i>
+                    </span>
+                    <span class="label">${agent.name}</span>
+                `;
                 opt.addEventListener('click', () => switchAgent(agent.id));
                 container.appendChild(opt);
             });
@@ -3677,6 +3677,9 @@
 
         function switchAgent(agentId) {
             currentAgentId = agentId;
+            // Reset conversation history when switching agents
+            conversationHistory = [];
+
             document.querySelectorAll('.agent-opt').forEach(el => {
                 const isActive = el.dataset.id === agentId;
                 el.classList.toggle('active', isActive);
@@ -3693,6 +3696,7 @@
                 }
             });
             updateChatHeader(agentId);
+            // Clear messages except welcome and typing
             const container = document.getElementById('chatMessages');
             const welcome = document.getElementById('welcomeMsg');
             const typing = document.getElementById('typingIndicator');
@@ -3739,22 +3743,49 @@
             });
         }
 
+        function getCurrentAgent() {
+            return allAgents.find(a => a.id === currentAgentId) || allAgents[0];
+        }
+
         function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if (!text) return;
             input.value = '';
+
+            // Add user message to UI and history
             addChatMessage('user', text);
+            conversationHistory.push({ role: 'user', content: text });
 
             const typing = document.getElementById('typingIndicator');
             typing.classList.add('active');
 
-            setTimeout(() => {
-                typing.classList.remove('active');
-                const agent = allAgents.find(a => a.id === currentAgentId);
-                let reply = agent ? agent.getResponse(text) : "I'm sorry, I couldn't process that.";
-                addChatMessage('bot', reply, agent);
-            }, 600 + Math.random() * 500);
+            // Call the API with conversation history and current agent ID
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: conversationHistory,
+                    agentId: currentAgentId   // <-- Send the current agent's ID
+                })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('API error: ' + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    typing.classList.remove('active');
+                    const reply = data.reply || "I'm sorry, I couldn't process that.";
+                    addChatMessage('bot', reply, getCurrentAgent());
+                    conversationHistory.push({ role: 'assistant', content: reply });
+                })
+                .catch(err => {
+                    console.error('Chat error:', err);
+                    typing.classList.remove('active');
+                    const errorMsg = '⚠️ I’m having trouble connecting. Please try again later.';
+                    addChatMessage('bot', errorMsg, getCurrentAgent());
+                    // Optionally, you could remove the last user message from history for retry
+                });
         }
 
         function addChatMessage(type, text, agent) {
@@ -3762,7 +3793,7 @@
             const div = document.createElement('div');
             div.className = 'msg ' + type;
             if (type === 'bot') {
-                const ag = agent || allAgents.find(a => a.id === currentAgentId) || allAgents[0];
+                const ag = agent || getCurrentAgent();
                 div.innerHTML = `<div class="label"><i class="fas ${ag.icon}"></i> ${ag.name}</div>${text}`;
             } else {
                 div.innerHTML = `<div class="label">You</div>${text}`;
@@ -3789,6 +3820,7 @@
         console.log('🚀 NEXORA AI — Sci-Fi Command Center');
         console.log('👑 Monica · Chief Intelligence Officer');
         console.log('✅ Full landing page with Why NEXORA, Testimonials, and premium footer.');
+        console.log('✅ Agent Bibles integrated — each agent has its own Enterprise Brain.');
     </script>
 </body>
 </html>
